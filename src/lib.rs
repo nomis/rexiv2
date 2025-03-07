@@ -944,17 +944,21 @@ impl Metadata {
         let c_str_tag = ffi::CString::new(tag)?;
         unsafe {
             let raw_tag_value = gexiv2::gexiv2_metadata_get_tag_raw(self.raw, c_str_tag.as_ptr());
-            let size = &mut 0;
-            let ptr = glib_sys::g_bytes_get_data(raw_tag_value, size) as *const u8;
-            let result = if ptr.is_null() {
+            if raw_tag_value.is_null() {
                 Err(Rexiv2Error::NoValue)
             } else {
-                // Make a copy here
-                // Could be optimized out but need to keep a reference to the returned GByte object
-                Ok(std::slice::from_raw_parts(ptr, *size).to_owned())
-            };
-            glib_sys::g_bytes_unref(raw_tag_value);
-            result
+                let size = &mut 0;
+                let ptr = glib_sys::g_bytes_get_data(raw_tag_value, size) as *const u8;
+                let result = if ptr.is_null() {
+                    Err(Rexiv2Error::NoValue)
+                } else {
+                    // Make a copy here
+                    // Could be optimized out but need to keep a reference to the returned GByte object
+                    Ok(std::slice::from_raw_parts(ptr, *size).to_owned())
+                };
+                glib_sys::g_bytes_unref(raw_tag_value);
+                result
+            }
         }
     }
 

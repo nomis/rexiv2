@@ -11,6 +11,7 @@ SPDX-License-Identifier: CC0-1.0
     will be returned, but altitude will be `None`. Altitudes that may have been
     previously shown as `0.0` will now be `None`. Calls to `set_gps_info` will
     also need updating. Thank you Jonas Hagen for the report and investigation.
+  * Fix glib error message from `get_tag_raw()` if the tag doesn't exist.
 
 ## [v0.10.0] - 2023-01-21
   * New API: `new_from_app1_segment` allows reading metadata from a buffer.
